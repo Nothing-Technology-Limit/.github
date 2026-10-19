@@ -43,7 +43,8 @@ Read it before your first change. When a rule here and a rule there disagree, th
 3. Wait for CI to pass. Where the repository runs an automated review, it comments on the pull
    request; read what it found and fix what applies. A review from another person is welcome, and a repository can require one for
    some paths (its `CODEOWNERS`) or branches (release branches need one approval).
-4. A person decides to merge. AI agents can prepare a change, but they do not merge it.
+4. A person decides to merge. An AI agent can prepare a change, and can carry out a merge a person
+   decided (see "Using an AI agent"); it never decides one.
 5. Merge by squash. The branch is deleted after the merge.
 
 ## Using an AI agent
@@ -55,9 +56,15 @@ account can do. These rules are for the person who runs the agent.
   yours, and you answer for it.
 - An agent can write code, run checks, push a branch, open a pull request, and delete a branch it
   created.
-- A person, not an agent, merges or approves a pull request, pushes or deletes a tag, uses a
-  bypass, deletes a branch or repository the agent did not create, and changes organization or
-  repository settings.
+- A person, not an agent, approves a pull request, decides to merge one, pushes or deletes a tag,
+  uses a bypass, deletes a branch or repository the agent did not create, and changes organization
+  or repository settings.
+- An agent can carry out a merge you decided, when you tell it in that session which pull request
+  to merge at which head commit. It waits until every required check and approval is in, then runs
+  `gh pr merge <number> --squash --match-head-commit <sha>` with that commit: GitHub merges only if
+  the head is still that commit at the moment of the merge, and a new head needs a new decision.
+  An agent never uses `--auto`, never merges on its own reading of a pull request, never without
+  `--match-head-commit`, and never by a bypass.
 - Keep your own instructions and notes for an agent outside the checkout, for example in
   `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. A file in the checkout that only you use must be
   ignored by git. A repository's `AGENTS.md`, `CLAUDE.md` and `CONTRIBUTING.md` are rules for
