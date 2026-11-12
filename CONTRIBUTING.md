@@ -37,14 +37,16 @@ Read it before your first change. When a rule here and a rule there disagree, th
 
 ## How a change reaches a repository
 
-1. Cut a short-lived branch from the default branch. Name it after the issue it serves, for example
+1. Cut a branch from the default branch. Name it as the repository's guide says. Where the guide
+   says nothing, name it after the issue it serves, for example
    `<your-name>/<issue-id>-short-description`.
 2. Open a pull request. Say what changed, how you verified it, and what you found but did not fix.
-3. Wait for CI to pass. Where the repository runs an automated review, it comments on the pull
-   request; read what it found and fix what applies. A review from another person is welcome, and a repository can require one for
-   some paths (its `CODEOWNERS`) or branches (release branches need one approval).
-4. A person decides to merge. An AI agent can prepare a change, and can carry out a merge a person
-   decided (see "Using an AI agent"); it never decides one.
+3. Wait for CI to pass. Where the repository runs an automated review or a verifier agent, read
+   what it found and fix what applies. A review from another person is welcome. A repository can
+   require one for some paths (its `CODEOWNERS`) or branches; its own guide says which.
+4. A person decides to merge, unless the repository's own guide lets an agent merge (see "Using
+   an AI agent"). A change that a user cannot get back, and a change that weakens the
+   repository's checks, always needs a person to look at it first.
 5. Merge by squash. The branch is deleted after the merge.
 
 ## Using an AI agent
@@ -56,15 +58,24 @@ account can do. These rules are for the person who runs the agent.
   yours, and you answer for it.
 - An agent can write code, run checks, push a branch, open a pull request, and delete a branch it
   created.
-- A person, not an agent, approves a pull request, decides to merge one, pushes or deletes a tag,
-  uses a bypass, deletes a branch or repository the agent did not create, and changes organization
-  or repository settings.
+- A person, not an agent, approves a pull request, pushes or deletes a tag, uses a bypass,
+  deletes a branch or repository the agent did not create, and changes organization or
+  repository settings. A person also decides each merge, unless the rule after the next one
+  applies.
 - An agent can carry out a merge you decided, when you tell it in that session which pull request
-  to merge at which head commit. It waits until every required check and approval is in, then runs
-  `gh pr merge <number> --squash --match-head-commit <sha>` with that commit: GitHub merges only if
-  the head is still that commit at the moment of the merge, and a new head needs a new decision.
-  An agent never uses `--auto`, never merges on its own reading of a pull request, never without
-  `--match-head-commit`, and never by a bypass.
+  to merge at which head commit. A new head needs a new decision.
+- A repository's own guide can let an agent merge without that decision. The guide must then name
+  three things: the checks that must be green, the class of change that an agent does not merge
+  by itself, and the place where each merge is announced. That class always includes a change
+  that a user cannot get back (stored user data deleted or migrated, user data that leaves the
+  device, an updater or an over-the-air release, an action taken for the user that cannot be
+  undone) and a change that weakens the repository's checks. For that class a person looks at
+  the change first, and the pull request records who looked and when. A person can stop any
+  agent merge, in the way the guide names.
+- In both cases the agent waits until every required check is in, then runs
+  `gh pr merge <number> --squash --match-head-commit <sha>`: GitHub merges only if the head is
+  still that commit at the moment of the merge. An agent never uses `--auto`, never merges
+  without `--match-head-commit`, and never merges by a bypass.
 - Keep your own instructions and notes for an agent outside the checkout, for example in
   `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. A file in the checkout that only you use must be
   ignored by git. A repository's `AGENTS.md`, `CLAUDE.md` and `CONTRIBUTING.md` are rules for
@@ -74,6 +85,18 @@ account can do. These rules are for the person who runs the agent.
   them. Before it pushes, it follows that guide: the branch name, the local checks, the pull
   request body.
 - An agent does not put a password, key or token in a commit, a pull request, an issue or a log.
+
+## Language
+
+English is the official language. Text in any other language is a translation of the English
+text. Write Slack messages (direct messages included), documents and Linear tickets in ASD-STE100
+Simplified Technical English.
+
+## Who to ask
+
+- CI/CD and deploys: send a direct message to Chaolei Pan.
+- Account permission, finance or HR: send a direct message to Ray Zhang.
+- Any other question: ask Samuel Chang, and wait for him to send you to the right person.
 
 ## Outside collaborators
 
